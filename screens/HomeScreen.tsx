@@ -9,7 +9,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Button title="📷 扫码" onPress={() => navigation.navigate('Scan', { barcode: '' })} />
+      <Button title="📷 扫码" onPress={() => navigation.navigate('Scan')} />
       <Button title="📦 入库" onPress={() => navigation.navigate('In')} />
       <Button title="📤 出库" onPress={() => navigation.navigate('Out')} />
     </View>

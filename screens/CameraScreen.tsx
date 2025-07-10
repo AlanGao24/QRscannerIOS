@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, Text } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../App';
+import { useRoute } from '@react-navigation/native';
 
 export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
-
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const route = useRoute();
+  const { onScanned } = route.params as { onScanned: (data: string) => void };
 
   useEffect(() => {
     if (!permission || !permission.granted) {
@@ -17,12 +15,12 @@ export default function CameraScreen() {
     }
   }, []);
 
-  const handleBarcodeScanned = ({ data }: { data: string }) => {
+    const handleBarcodeScanned = ({ data }: { data: string }) => {
     if (!scanned) {
-      setScanned(true);
-      navigation.navigate('Scan', { barcode: data });
+        setScanned(true);
+        navigation.navigate('Scan', { barcode: data }); // navigate 回去并携带参数
     }
-  };
+    };
 
   if (!permission?.granted) {
     return <Text>没有摄像头权限，正在请求...</Text>;
@@ -32,9 +30,7 @@ export default function CameraScreen() {
     <View style={styles.container}>
       <CameraView
         onBarcodeScanned={handleBarcodeScanned}
-        barcodeScannerSettings={{
-          barcodeTypes: ['ean13', 'qr', 'code128'],
-        }}
+        barcodeScannerSettings={{ barcodeTypes: ['ean13', 'qr', 'code128'] }}
         style={StyleSheet.absoluteFillObject}
       />
     </View>
@@ -42,7 +38,5 @@ export default function CameraScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: { flex: 1 },
 });
